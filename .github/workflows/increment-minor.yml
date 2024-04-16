@@ -13,6 +13,7 @@ jobs:
 
   #Job for building and pushing the Docker image
   deploy-to-dev:
+    name: Deploy on Dev
     runs-on: ubuntu-latest
 
     defaults:
