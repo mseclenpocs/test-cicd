@@ -2,7 +2,7 @@
 # Triggering the workflow on push events to the main branch
 on:
   push:
-    branches: [develop]
+    branches: [main]
 
 # Environment variables for registry details, project, image, version file, and version fragment
 env: 
@@ -39,6 +39,10 @@ jobs:
 
   #Job for building and pushing the Docker image
   deploy-to-staging:
+    name: Deploy on Staging
+    environment:
+      name: staging
+      url: ${{ secrets.STAGING_URL }}
     needs: deploy-to-dev
     runs-on: ubuntu-latest
 
