@@ -42,7 +42,6 @@ jobs:
     name: Deploy on Staging
     environment:
       name: staging
-      url: ${{ secrets.STAGING_URL }}
     needs: deploy-to-dev
     runs-on: ubuntu-latest
 
