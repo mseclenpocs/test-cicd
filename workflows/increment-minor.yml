@@ -1,0 +1,64 @@
+# name: Increment MINOR version, building image and pushing to the registry
+# Triggering the workflow on push events to the main branch
+on:
+  push:
+    branches: [develop]
+
+# Environment variables for registry details, project, image, version file, and version fragment
+env: 
+  REGISTRY: ${{ secrets.REGISTRY }}           # Registry URL
+  PROJECT: ${{ secrets.PROJECT }}             # Project name
+
+jobs:
+
+  #Job for building and pushing the Docker image
+  deploy-to-dev:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./edgegap-iac/edgegap-apis/
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4  
+
+      - name: Make the script files executable
+        run: chmod +x create-version.sh update-matchmaker.sh
+
+      - name: Read version from file
+        run: |
+          NEW_VERSION=$(cat ${GITHUB_WORKSPACE}/VERSION)
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "VERSION_NAME=${NEW_VERSION}" >> $GITHUB_ENV
+
+      - name: Use Version
+        run: |
+          echo "The new version is ${{ env.VERSION }}"
+          echo "The new version is ${{ env.VERSION_NAME }}"
+
+
+  #Job for building and pushing the Docker image
+  deploy-to-staging:
+    needs: deploy-to-dev
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./edgegap-iac/edgegap-apis/
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4  
+
+      - name: Make the script files executable
+        run: chmod +x create-version.sh update-matchmaker.sh
+
+      - name: Read version from file
+        run: |
+          NEW_VERSION=$(cat ${GITHUB_WORKSPACE}/VERSION)
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "VERSION_NAME=${NEW_VERSION}" >> $GITHUB_ENV
+
+      - name: Use Version
+        run: |
+          echo "The new version is ${{ env.VERSION }}"
+          echo "The new version is ${{ env.VERSION_NAME }}"
